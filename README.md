@@ -1,4 +1,6 @@
 # CertPinner
+[![Build status](https://ci.appveyor.com/api/projects/status/h6a9xeaklghs37nv/branch/development?svg=true)](https://ci.appveyor.com/project/jmaxxz/certpinner/branch/development)
+
 A .net library which provides certificate pinning. Ideal for applications where a CA infrastructure is prohibitive or potentially comprimised.
 
 ## Use cases
