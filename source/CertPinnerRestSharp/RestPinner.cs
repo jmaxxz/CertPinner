@@ -6,15 +6,15 @@ namespace CertPinnerRestSharp
 {
 	public class RestPinner
 	{
-		private readonly bool _trustOnFirstuse;
-		private readonly bool _trustCertificateAuthorities;
-		private readonly bool _trustExpired;
+		public bool TrustOnFirstUse { get; set; }
+		public bool TrustCertificateAuthorities { get; set; }
+		public bool TrustExpired { get; set; }
 
 		public RestPinner(bool trustOnFirstuse = false, bool trustCertificateAuthorities = false, bool trustExpired = false)
 		{
-			_trustOnFirstuse = trustOnFirstuse;
-			_trustCertificateAuthorities = trustCertificateAuthorities;
-			_trustExpired = trustExpired;
+			TrustOnFirstUse = trustOnFirstuse;
+			TrustCertificateAuthorities = trustCertificateAuthorities;
+			TrustExpired = trustExpired;
 		}
 		public void EnablePinning(IRestClient restClient)
 		{
