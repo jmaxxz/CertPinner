@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace CertPinnerRestSharp
 {
@@ -50,6 +51,19 @@ namespace CertPinnerRestSharp
 			var result = instance.MatchesExistingPinOrIsNew("fOo.com", new byte[] {0, 1, 2, 2});
 			// Assert
 			Assert.IsFalse(result);
+		}
+
+		[Test]
+		public void MatchesExisting_IfNew_ReturnsFalse()
+		{
+			// Arrange
+			var instance = new InMemoryKeyStore();
+			// Act
+			var result = instance.MatchesExisting("foo.com", new byte[] {1, 2, 3});
+			var result2 = instance.MatchesExisting("foo.com", new byte[] {1, 2, 3});
+			// Assert
+			Assert.IsFalse(result, "First request should return false");
+			Assert.IsFalse(result2, "Subsequent requests should return false");
 		}
 	}
 }

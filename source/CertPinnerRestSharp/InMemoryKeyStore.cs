@@ -9,16 +9,15 @@ namespace CertPinnerRestSharp
 		private readonly ConcurrentDictionary<string, byte[]> _backingStore = new ConcurrentDictionary<string, byte[]>();
 		public bool MatchesExistingPinOrIsNew(string host, byte[] publicKey)
 		{
-			var newKey = publicKey;
 			var normalizedHost = host.ToUpperInvariant();
 			byte[] oldKey;
 			if (_backingStore.TryGetValue(normalizedHost, out oldKey))
 			{
-				return newKey.SequenceEqual(oldKey);
+				return publicKey.SequenceEqual(oldKey);
 			}
 			else
 			{
-				if (_backingStore.TryAdd(normalizedHost, newKey))
+				if (_backingStore.TryAdd(normalizedHost, publicKey))
 				{
 					return true;
 				}
@@ -28,6 +27,18 @@ namespace CertPinnerRestSharp
 					// we only consider the first which makes it in.
 					return MatchesExistingPinOrIsNew(host, publicKey);
 				}
+			}
+
+			return false;
+		}
+
+		public bool MatchesExisting(string host, byte[] publicKey)
+		{
+			var normalizedHost = host.ToUpperInvariant();
+			byte[] oldKey;
+			if (_backingStore.TryGetValue(normalizedHost, out oldKey))
+			{
+				return publicKey.SequenceEqual(oldKey);
 			}
 
 			return false;
