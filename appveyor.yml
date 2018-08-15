@@ -14,6 +14,8 @@ dotnet_csproj:
   informational_version: '{version}'
 nuget:
   disable_publish_on_pr: true
+before_build:
+- cmd: nuget restore
 build:
   project: CertPinner.sln
   verbosity: minimal
