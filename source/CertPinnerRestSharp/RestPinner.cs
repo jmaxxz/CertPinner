@@ -39,7 +39,7 @@ namespace CertPinnerRestSharp
 		{
 			if (TrustOnFirstUse)
 			{
-				return _keyStore.MatchesExistingPinOrIsNew(request.Host, certificate);
+				return _keyStore.MatchesExistingPinOrIsNew(request.Host, certificate.GetPublicKey());
 			}
 
 			return false;

@@ -69,7 +69,7 @@ namespace CertPinnerRestSharp.Tests
 		}
 
 		[Test]
-		public async Task OnRequest_WhenTrustOnFirstUse_ResultsInSuccess()
+		public async Task WhenTrustOnFirstUse_FirstRequest_ResultsInSuccess()
 		{
 			// Arrange
 			var restClient = new RestClient("https://google.com");
@@ -83,6 +83,27 @@ namespace CertPinnerRestSharp.Tests
 			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
 			// Assert
 			Assert.AreEqual(ResponseStatus.Completed, result.ResponseStatus);
+		}
+
+		[Test]
+		public async Task WhenTrustOnFirstUse_AfterPKChanges_ResultsInFailure()
+		{
+			// Arrange
+			var keyStore = new InMemoryKeyStore();
+			var restClient = new RestClient("https://google.com");
+			var restPinner = new RestPinner(keyStore)
+			{
+				TrustOnFirstUse = true
+			};
+			restPinner.EnablePinning(restClient);
+
+			// Act
+			// Fake first request by just injecting key into store
+			keyStore.MatchesExistingPinOrIsNew("google.com", new byte[] {0, 0, 0});
+			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
+			// Assert
+			Assert.AreEqual(ResponseStatus.Error, result.ResponseStatus);
+			StringAssert.Contains("TrustFailure", result.ErrorMessage);
 		}
 	 }
 }

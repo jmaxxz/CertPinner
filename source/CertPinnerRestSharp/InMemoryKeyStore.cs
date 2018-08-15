@@ -7,9 +7,9 @@ namespace CertPinnerRestSharp
 	public class InMemoryKeyStore : IKeyStore
 	{
 		private readonly ConcurrentDictionary<string, byte[]> _backingStore = new ConcurrentDictionary<string, byte[]>();
-		public bool MatchesExistingPinOrIsNew(string host, X509Certificate cert)
+		public bool MatchesExistingPinOrIsNew(string host, byte[] publicKey)
 		{
-			var newKey = cert.GetPublicKey();
+			var newKey = publicKey;
 			var normalizedHost = host.ToUpperInvariant();
 			byte[] oldKey;
 			if (_backingStore.TryGetValue(normalizedHost, out oldKey))
@@ -26,7 +26,7 @@ namespace CertPinnerRestSharp
 				{
 					// two different request attempted to set value for same key
 					// we only consider the first which makes it in.
-					return MatchesExistingPinOrIsNew(host, cert);
+					return MatchesExistingPinOrIsNew(host, publicKey);
 				}
 			}
 
