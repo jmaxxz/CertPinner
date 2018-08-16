@@ -18,8 +18,7 @@ namespace CertPinner
 		[SetUp]
 		public void ResetToDefaults()
 		{
-			CertificatePinner.TrustCertificateAuthorities = false;
-			CertificatePinner.AllowExpired = false;
+			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
 			CertificatePinner.TrustOnFirstUse = false;
 			CertificatePinner.KeyStore = new InMemoryKeyStore();
 		}
@@ -29,13 +28,11 @@ namespace CertPinner
 		{
 			// Arrange
 			// Act
-			CertificatePinner.TrustCertificateAuthorities = true;
-			CertificatePinner.AllowExpired = true;
+			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.AlwaysTrust;
 			CertificatePinner.TrustOnFirstUse = true;
 
 			// Assert
-			Assert.IsTrue(CertificatePinner.TrustCertificateAuthorities);
-			Assert.IsTrue(CertificatePinner.AllowExpired);
+			Assert.AreEqual(CertificatePinner.CertificateAuthorityMode, CertificateAuthorityMode.AlwaysTrust);
 			Assert.IsTrue(CertificatePinner.TrustOnFirstUse);
 		}
 
@@ -70,18 +67,20 @@ namespace CertPinner
 			Assert.AreEqual(ResponseStatus.Completed, result.ResponseStatus);
 		}
 
+
 		[Test]
-        [Ignore("RestSharp or .net bug keeps this from working")]
-        public async Task WhenTrustOnFirstUse_AfterPKChanges_ResultsInFailure()
+		public async Task WhenTrustOnFirstUse_AfterPKChanges_ResultsInFailure()
 		{
 			// Arrange
 			var restClient = new RestClient("https://google.com");
+			//RestSharp bug keeps this from working without the next line
+			restClient.RemoteCertificateValidationCallback = CertificatePinner.CertificateValidationCallback;
 			CertificatePinner.KeyStore = new InMemoryKeyStore();
 			CertificatePinner.TrustOnFirstUse = true;
 
 			// Act
 			// Fake first request by just injecting key into store
-			CertificatePinner.KeyStore.MatchesExistingOrIsNew("google.com", new byte[] {0, 0, 0});
+			CertificatePinner.KeyStore.PinForHost("google.com", new byte[] {0, 0, 0});
 			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
 
 			// Assert
@@ -99,6 +98,25 @@ namespace CertPinner
 			// Act
 			// Fake first request by just injecting key into store
 			CertificatePinner.TrustOnFirstUse = false;
+			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
+
+			// Assert
+			Assert.AreEqual(ResponseStatus.Completed, result.ResponseStatus);
+		}
+
+		[TestCase(false)]
+		[TestCase(true)]
+		public async Task WhenAlwaysTrustCase_WhenPinSaysNoButCaSaysYes_ResultsInSuccess(bool trustOnFirstUse)
+		{
+			// Arrange
+			var restClient = new RestClient("https://google.com");
+			CertificatePinner.KeyStore = new InMemoryKeyStore();
+			CertificatePinner.TrustOnFirstUse = trustOnFirstUse;
+			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.AlwaysTrust;
+
+			// Act
+			// Fake first request by just injecting key into store
+			CertificatePinner.KeyStore.PinForHost("google.com", new byte[] {0, 0, 0});
 			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
 
 			// Assert

@@ -15,5 +15,9 @@
 		{
 			return false;
 		}
+
+		public void PinForHost(string host, byte[] publicKey)
+		{
+		}
 	}
 }

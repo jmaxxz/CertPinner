@@ -12,10 +12,11 @@ namespace CertPinner
 			set => _keyStore = value ?? new NullKeyStore();
 		}
 
-		private static IKeyStore _keyStore  = new NullKeyStore();
+		private static IKeyStore _keyStore  = new InMemoryKeyStore();
 		public static bool TrustOnFirstUse { get; set; }
-		public static bool TrustCertificateAuthorities { get; set; }
-		public static bool AllowExpired { get; set; }
+
+		public static CertificateAuthorityMode CertificateAuthorityMode { get; set; } =
+			CertificateAuthorityMode.TrustIfNotPinned;
 
 
 		public static void Enable()
@@ -35,12 +36,15 @@ namespace CertPinner
 
 		private static bool CertificateValidationCallback(HttpWebRequest request, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslpolicyerrors)
 		{
+			var defaultResult = sslpolicyerrors == SslPolicyErrors.None &&
+			                    CertificateAuthorityMode == CertificateAuthorityMode.AlwaysTrust;
 			if (TrustOnFirstUse)
 			{
-				return _keyStore.MatchesExistingOrIsNew(request.Host, certificate.GetPublicKey());
+				// Check default result 2nd in order to ensure key is added to store on first request
+				return _keyStore.MatchesExistingOrIsNew(request.Host, certificate.GetPublicKey()) || defaultResult;
 			}
 
-			return _keyStore.MatchesExisting(request.Host, certificate.GetPublicKey());
+			return defaultResult || _keyStore.MatchesExisting(request.Host, certificate.GetPublicKey());
 		}
 	}
 }

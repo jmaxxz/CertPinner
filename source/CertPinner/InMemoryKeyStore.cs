@@ -5,6 +5,8 @@ namespace CertPinner
 {
 	public class InMemoryKeyStore : IKeyStore
 	{
+		// Right now we store the full public key. If this takes up too much
+		// memory can switch to storing a signature.
 		private readonly ConcurrentDictionary<string, byte[]> _backingStore = new ConcurrentDictionary<string, byte[]>();
 		public bool MatchesExistingOrIsNew(string host, byte[] publicKey)
 		{
@@ -33,6 +35,12 @@ namespace CertPinner
 			}
 
 			return false;
+		}
+
+		public void PinForHost(string host, byte[] publicKey)
+		{
+			var normalizedHost = host.ToUpperInvariant();
+			_backingStore[normalizedHost] = publicKey;
 		}
 	}
 }
