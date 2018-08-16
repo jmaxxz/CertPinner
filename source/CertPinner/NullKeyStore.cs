@@ -6,12 +6,17 @@
 	/// </summary>
 	public class NullKeyStore : IKeyStore
 	{
-		public bool MatchesExistingOrIsNew(string host, byte[] publicKey)
+		public bool MatchesExistingOrAddIfNew(string host, byte[] publicKey)
 		{
 			return false;
 		}
 
 		public bool MatchesExisting(string host, byte[] publicKey)
+		{
+			return false;
+		}
+
+		public bool IsPinned(string host)
 		{
 			return false;
 		}

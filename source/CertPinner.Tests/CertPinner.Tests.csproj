@@ -13,4 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CertPinner\CertPinner.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
 </Project>

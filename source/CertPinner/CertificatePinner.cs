@@ -16,7 +16,7 @@ namespace CertPinner
 		public static bool TrustOnFirstUse { get; set; }
 
 		public static CertificateAuthorityMode CertificateAuthorityMode { get; set; } =
-			CertificateAuthorityMode.TrustIfNotPinned;
+			CertificateAuthorityMode.Distrust;
 
 
 		public static void Enable()
@@ -37,11 +37,12 @@ namespace CertPinner
 		private static bool CertificateValidationCallback(HttpWebRequest request, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslpolicyerrors)
 		{
 			var defaultResult = sslpolicyerrors == SslPolicyErrors.None &&
-			                    CertificateAuthorityMode == CertificateAuthorityMode.AlwaysTrust;
+			                    (CertificateAuthorityMode == CertificateAuthorityMode.AlwaysTrust
+			                     || CertificateAuthorityMode == CertificateAuthorityMode.TrustIfNotPinned && !_keyStore.IsPinned(request.Host));
 			if (TrustOnFirstUse)
 			{
 				// Check default result 2nd in order to ensure key is added to store on first request
-				return _keyStore.MatchesExistingOrIsNew(request.Host, certificate.GetPublicKey()) || defaultResult;
+				return _keyStore.MatchesExistingOrAddIfNew(request.Host, certificate.GetPublicKey()) || defaultResult;
 			}
 
 			return defaultResult || _keyStore.MatchesExisting(request.Host, certificate.GetPublicKey());

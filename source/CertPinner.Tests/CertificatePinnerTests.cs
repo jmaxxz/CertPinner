@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using RestSharp;
 
@@ -8,6 +10,10 @@ namespace CertPinner
 	[NonParallelizable]
 	public class PinnerTests
 	{
+		private static HttpClient GetClient(string baseUrl)
+		{
+			return new HttpClient {BaseAddress = new Uri(baseUrl, UriKind.Absolute)};
+		}
 
 		[OneTimeSetUp]
 		public void OnTimeSetup()
@@ -18,7 +24,7 @@ namespace CertPinner
 		[SetUp]
 		public void ResetToDefaults()
 		{
-			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
+			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.Distrust;
 			CertificatePinner.TrustOnFirstUse = false;
 			CertificatePinner.KeyStore = new InMemoryKeyStore();
 		}
@@ -40,87 +46,116 @@ namespace CertPinner
 		[Category("Integration")]
 		[TestCase("https://expired.badssl.com")] // Known bad cert
 		[TestCase("https://google.com")] // Known good cert
-		public async Task OnRequest_WhenDontTrustOnFirstUse_ResultsInError(string url)
+		public void OnRequest_WhenDontTrustOnFirstUse_ResultsInError(string url)
 		{
 			// Arrange
-			var restClient = new RestClient(url);
+			var restClient = GetClient(url);
 			CertificatePinner.TrustOnFirstUse = false;
 
 			// Act
-			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
-
 			// Assert
-			Assert.AreEqual(ResponseStatus.Error, result.ResponseStatus);
+			Assert.ThrowsAsync<HttpRequestException>(()=>restClient.GetAsync(""));
 		}
 
 		[Test]
 		public async Task WhenTrustOnFirstUse_FirstRequest_ResultsInSuccess()
 		{
 			// Arrange
-			var restClient = new RestClient("https://google.com");
-			CertificatePinner.TrustOnFirstUse = true;
+			using (var restClient = GetClient("https://google.com"))
+			{
+				CertificatePinner.TrustOnFirstUse = true;
 
-			// Act
-			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
-
-			// Assert
-			Assert.AreEqual(ResponseStatus.Completed, result.ResponseStatus);
+				// Act
+				// Assert
+				Assert.DoesNotThrowAsync(()=>restClient.GetAsync(""));
+			}
 		}
 
 
 		[Test]
-		public async Task WhenTrustOnFirstUse_AfterPKChanges_ResultsInFailure()
+		public void WhenTrustOnFirstUse_AfterPKChanges_ResultsInFailure()
 		{
 			// Arrange
-			var restClient = new RestClient("https://google.com");
-			//RestSharp bug keeps this from working without the next line
-			restClient.RemoteCertificateValidationCallback = CertificatePinner.CertificateValidationCallback;
-			CertificatePinner.KeyStore = new InMemoryKeyStore();
-			CertificatePinner.TrustOnFirstUse = true;
+			using (var restClient = GetClient("https://google.com"))
+			{
+				CertificatePinner.KeyStore = new InMemoryKeyStore();
+				CertificatePinner.TrustOnFirstUse = true;
 
-			// Act
-			// Fake first request by just injecting key into store
-			CertificatePinner.KeyStore.PinForHost("google.com", new byte[] {0, 0, 0});
-			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
-
-			// Assert
-			Assert.AreEqual(ResponseStatus.Error, result.ResponseStatus);
+				// Act
+				// Fake first request by just injecting key into store
+				CertificatePinner.KeyStore.PinForHost("google.com", new byte[] {0, 0, 0});
+				// Assert
+				Assert.ThrowsAsync<HttpRequestException>(()=>restClient.GetAsync(""));
+			}
 		}
 
 		[Test]
 		public async Task WhenDontTrustOnFirstUse_WhenPublicKeyInStore_ResultsInSuccess()
 		{
 			// Arrange
-			var restClient = new RestClient("https://google.com");
-			CertificatePinner.TrustOnFirstUse = true;
-			await restClient.ExecuteGetTaskAsync(new RestRequest());
+			using (var restClient = GetClient("https://google.com"))
+			{
+				CertificatePinner.TrustOnFirstUse = true;
+				await restClient.GetAsync("");
 
-			// Act
-			// Fake first request by just injecting key into store
-			CertificatePinner.TrustOnFirstUse = false;
-			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
-
-			// Assert
-			Assert.AreEqual(ResponseStatus.Completed, result.ResponseStatus);
+				// Act
+				// Fake first request by just injecting key into store
+				CertificatePinner.TrustOnFirstUse = false;
+				// Assert
+				Assert.DoesNotThrowAsync(()=>restClient.GetAsync(""));
+			}
 		}
 
 		[TestCase(false)]
 		[TestCase(true)]
-		public async Task WhenAlwaysTrustCase_WhenPinSaysNoButCaSaysYes_ResultsInSuccess(bool trustOnFirstUse)
+		public void WhenAlwaysTrustCAs_WhenPinSaysNoButCaSaysYes_ResultsInSuccess(bool trustOnFirstUse)
 		{
 			// Arrange
-			var restClient = new RestClient("https://google.com");
-			CertificatePinner.KeyStore = new InMemoryKeyStore();
-			CertificatePinner.TrustOnFirstUse = trustOnFirstUse;
-			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.AlwaysTrust;
+			using (var restClient = GetClient("https://google.com"))
+			{
+				CertificatePinner.KeyStore = new InMemoryKeyStore();
+				CertificatePinner.TrustOnFirstUse = trustOnFirstUse;
+				CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.AlwaysTrust;
 
-			// Act
-			// Fake first request by just injecting key into store
-			CertificatePinner.KeyStore.PinForHost("google.com", new byte[] {0, 0, 0});
-			var result = await restClient.ExecuteGetTaskAsync(new RestRequest());
+				// Act
+				// Fake first request by just injecting key into store
+				CertificatePinner.KeyStore.PinForHost("google.com", new byte[] {0, 0, 0});
+				// Assert
+				Assert.DoesNotThrowAsync(()=>restClient.GetAsync(""));
+			}
+		}
 
-			// Assert
-			Assert.AreEqual(ResponseStatus.Completed, result.ResponseStatus);
+		[Test]
+		public void WhenAlwaysTrustCA_WhenPinSaysNoButCaSaysYes_ResultsInFailure()
+		{
+			// Arrange
+			using (var restClient = GetClient("https://google.com"))
+			{
+				CertificatePinner.KeyStore = new InMemoryKeyStore();
+				CertificatePinner.TrustOnFirstUse = false;
+				CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
+
+				// Act
+				// Fake first request by just injecting key into store
+				CertificatePinner.KeyStore.PinForHost("google.com", new byte[] {0, 0, 0});
+				// Assert
+				Assert.ThrowsAsync<HttpRequestException>(()=>restClient.GetAsync(""));
+			}
+		}
+
+		[Test]
+		public void WhenAlwaysTrustCase_WhenNotPinnedButCaSaysYes_ResultsInSuccess()
+		{
+			// Arrange
+			using (var restClient = GetClient("https://google.com"))
+			{
+				CertificatePinner.KeyStore = new InMemoryKeyStore();
+				CertificatePinner.TrustOnFirstUse = false;
+				CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
+
+				// Act + Assert
+				Assert.DoesNotThrowAsync(()=>restClient.GetAsync(""));
+			}
 		}
 	 }
 }

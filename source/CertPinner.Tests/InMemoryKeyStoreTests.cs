@@ -11,7 +11,7 @@ namespace CertPinner
 			// Arrange
 			var instance = new InMemoryKeyStore();
 			// Act
-			var result = instance.MatchesExistingOrIsNew("foo.com", new byte[] {0, 1, 2, 3});
+			var result = instance.MatchesExistingOrAddIfNew("foo.com", new byte[] {0, 1, 2, 3});
 			// Assert
 			Assert.IsTrue(result);
 		}
@@ -21,9 +21,9 @@ namespace CertPinner
 		{
 			// Arrange
 			var instance = new InMemoryKeyStore();
-			instance.MatchesExistingOrIsNew("foo.com", new byte[] {0, 1, 2, 3});
+			instance.MatchesExistingOrAddIfNew("foo.com", new byte[] {0, 1, 2, 3});
 			// Act
-			var result = instance.MatchesExistingOrIsNew("foo.com", new byte[] {0, 1, 2, 3});
+			var result = instance.MatchesExistingOrAddIfNew("foo.com", new byte[] {0, 1, 2, 3});
 			// Assert
 			Assert.IsTrue(result);
 		}
@@ -33,9 +33,9 @@ namespace CertPinner
 		{
 			// Arrange
 			var instance = new InMemoryKeyStore();
-			instance.MatchesExistingOrIsNew("foo.com", new byte[] {0, 1, 2, 3});
+			instance.MatchesExistingOrAddIfNew("foo.com", new byte[] {0, 1, 2, 3});
 			// Act
-			var result = instance.MatchesExistingOrIsNew("foo.com", new byte[] {0, 1, 2, 2});
+			var result = instance.MatchesExistingOrAddIfNew("foo.com", new byte[] {0, 1, 2, 2});
 			// Assert
 			Assert.IsFalse(result);
 		}
@@ -45,9 +45,9 @@ namespace CertPinner
 		{
 			// Arrange
 			var instance = new InMemoryKeyStore();
-			instance.MatchesExistingOrIsNew("foo.com", new byte[] {0, 1, 2, 3});
+			instance.MatchesExistingOrAddIfNew("foo.com", new byte[] {0, 1, 2, 3});
 			// Act
-			var result = instance.MatchesExistingOrIsNew("fOo.com", new byte[] {0, 1, 2, 2});
+			var result = instance.MatchesExistingOrAddIfNew("fOo.com", new byte[] {0, 1, 2, 2});
 			// Assert
 			Assert.IsFalse(result);
 		}
