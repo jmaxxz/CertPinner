@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertPinnerRestSharp", "source\CertPinnerRestSharp\CertPinnerRestSharp.csproj", "{8E37EA65-B4B5-4098-9DAA-FEEA8659B15B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertPinner", "source\CertPinner\CertPinner.csproj", "{816DD755-6D6F-493C-8BD0-806A8FA26117}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertPinnerRestSharp.Tests", "source\CertPinnerRestSharp.Tests\CertPinnerRestSharp.Tests.csproj", "{8EBDA735-41CA-43B3-B294-65EDB54249D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertPinner.Tests", "source\CertPinner.Tests\CertPinner.Tests.csproj", "{6BAEC5B5-6FF6-455F-AC47-CF914430BBD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +10,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8E37EA65-B4B5-4098-9DAA-FEEA8659B15B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E37EA65-B4B5-4098-9DAA-FEEA8659B15B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E37EA65-B4B5-4098-9DAA-FEEA8659B15B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E37EA65-B4B5-4098-9DAA-FEEA8659B15B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8EBDA735-41CA-43B3-B294-65EDB54249D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8EBDA735-41CA-43B3-B294-65EDB54249D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8EBDA735-41CA-43B3-B294-65EDB54249D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8EBDA735-41CA-43B3-B294-65EDB54249D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{816DD755-6D6F-493C-8BD0-806A8FA26117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{816DD755-6D6F-493C-8BD0-806A8FA26117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{816DD755-6D6F-493C-8BD0-806A8FA26117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{816DD755-6D6F-493C-8BD0-806A8FA26117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BAEC5B5-6FF6-455F-AC47-CF914430BBD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BAEC5B5-6FF6-455F-AC47-CF914430BBD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BAEC5B5-6FF6-455F-AC47-CF914430BBD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BAEC5B5-6FF6-455F-AC47-CF914430BBD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
