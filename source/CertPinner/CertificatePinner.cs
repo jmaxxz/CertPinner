@@ -15,7 +15,7 @@ namespace CertPinner
 		private static IKeyStore _keyStore  = new NullKeyStore();
 		public static bool TrustOnFirstUse { get; set; }
 		public static bool TrustCertificateAuthorities { get; set; }
-		public static bool TrustExpired { get; set; }
+		public static bool AllowExpired { get; set; }
 
 
 		public static void Enable()
