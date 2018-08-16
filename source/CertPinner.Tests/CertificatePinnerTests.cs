@@ -57,6 +57,7 @@ namespace CertPinner
 			Assert.ThrowsAsync<HttpRequestException>(()=>restClient.GetAsync(""));
 		}
 
+		[Category("Integration")]
 		[Test]
 		public async Task WhenTrustOnFirstUse_FirstRequest_ResultsInSuccess()
 		{
@@ -72,6 +73,7 @@ namespace CertPinner
 		}
 
 
+		[Category("Integration")]
 		[Test]
 		public void WhenTrustOnFirstUse_AfterPKChanges_ResultsInFailure()
 		{
@@ -89,6 +91,7 @@ namespace CertPinner
 			}
 		}
 
+		[Category("Integration")]
 		[Test]
 		public async Task WhenDontTrustOnFirstUse_WhenPublicKeyInStore_ResultsInSuccess()
 		{
@@ -106,6 +109,7 @@ namespace CertPinner
 			}
 		}
 
+		[Category("Integration")]
 		[TestCase(false)]
 		[TestCase(true)]
 		public void WhenAlwaysTrustCAs_WhenPinSaysNoButCaSaysYes_ResultsInSuccess(bool trustOnFirstUse)
@@ -125,6 +129,7 @@ namespace CertPinner
 			}
 		}
 
+		[Category("Integration")]
 		[Test]
 		public void WhenAlwaysTrustCA_WhenPinSaysNoButCaSaysYes_ResultsInFailure()
 		{
@@ -143,6 +148,7 @@ namespace CertPinner
 			}
 		}
 
+		[Category("Integration")]
 		[Test]
 		public void WhenAlwaysTrustCase_WhenNotPinnedButCaSaysYes_ResultsInSuccess()
 		{
