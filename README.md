@@ -10,3 +10,30 @@ For certain applications and environments it is difficult to role out and mainta
 
 ### Manual pinning
 Provides a mechanism to pin certificate at configuration or compilation time. This strategy is ideal when the number of endpoints is minimal and known in advance.
+
+
+## Included Automatic Pinning Stratagies
+
+Several built in pinning strategies are included in CertPinner. If none of these strategies meet your needs a custom one can be provided by implementing `IAutomaticPinPolicy`. Automatic pinning strategies only affect pinning if no key has yet been pinned for a given host. Stategies below are ordered in terms of their restrictness, from most restrictive to least. In general more restrictive strategies should be prefered.
+
+### Never (Default)
+
+The most restrictive option, this option should be self explanitory. If the automatic pinning strategy is set to never no public keys will be automatically pinned. If caller wishes to pin a key it must be done explicity by updating the keystore directly.
+
+```csharp
+
+```
+
+### Whitelist
+
+The whitelist strategy only allows pinning hosts which have been explicitly specified.
+
+
+### Blacklisting
+
+The blacklist strategy allows pinning on all hosts except those which have been explicitly excluded.
+
+
+### Always Trust On First Use
+
+The always trust on first use strategy allows the pinning for all hosts. For applications which make requests to an indeterminately large number of hosts this strategy should be avoid as it will cause the keystore to grow quite large. This strategy is almost never the ideal long term solution. However, it provides a quick upgrade path for applications which may currently disable certificate validation entirely. The always trust on first use policy may be acceptable long term strategy for applications which only communicate with other devices on the lan especially if these other devices make use of self signed certificates.
