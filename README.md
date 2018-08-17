@@ -18,7 +18,7 @@ Several built in pinning strategies are included in CertPinner. If none of these
 
 ### Never (Default)
 
-The most restrictive option, this option should be self explanitory. If the automatic pinning strategy is set to never no public keys will be automatically pinned. If caller wishes to pin a key it must be done explicity by updating the keystore directly.
+The most restrictive option, this option should be self explanitory. If the automatic pinning strategy is set to never no public keys will be automatically pinned. If caller wishes to pin a key it must be done explicity by updating the keystore directly. **IMPORTANT** strategy can be changed at anytime, for example one may wish to run in a less restrictive mode to allow peer discovery during installation or configuration and switch to a more restrictive mode for normal operation. All of the following modes are safer than disabling certificate validation outright. If your application currently disables certificate validation switching using CertPinner with the always strategy will improve the security of your application with minimal risk of breakage.
 
 ```csharp
 
@@ -26,7 +26,7 @@ The most restrictive option, this option should be self explanitory. If the auto
 
 ### Whitelist
 
-The whitelist strategy only allows pinning hosts which have been explicitly specified.
+The whitelist strategy only allows pinning hosts which have been explicitly specified. This strategy is recommended when remote public keys are not known at compile time or installation time. If self discovery of remote public keys is acceptable and desired this is the prefered strategy.
 
 
 ### BlackList
