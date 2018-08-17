@@ -14,7 +14,7 @@ Provides a mechanism to pin certificate at configuration or compilation time. Th
 
 ## Included Automatic Pinning Stratagies
 
-Several built in pinning strategies are included in CertPinner. If none of these strategies meet your needs a custom one can be provided by implementing `IAutomaticPinPolicy`. Automatic pinning strategies only affect pinning if no key has yet been pinned for a given host. Stategies below are ordered in terms of their restrictness, from most restrictive to least. In general more restrictive strategies should be prefered.
+Several built in pinning strategies are included in CertPinner. If none of these strategies meet your needs a custom one can be provided by implementing `IAutomaticPinPolicy`. Automatic pinning strategies only affect pinning if no key has yet been pinned for a given host. Stategies below are ordered from most restrictive to least. In general more restrictive strategies should be prefered.
 
 ### Never (Default)
 
