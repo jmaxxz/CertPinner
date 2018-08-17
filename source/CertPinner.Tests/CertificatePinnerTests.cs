@@ -3,7 +3,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using RestSharp;
-
+// ReSharper disable AccessToDisposedClosure
+// Disabled because AssertThrowsAsync waits so resharper misidentifies this
 namespace CertPinner
 {
 	[TestFixture]
@@ -25,7 +26,7 @@ namespace CertPinner
 		public void ResetToDefaults()
 		{
 			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.Distrust;
-			CertificatePinner.TrustOnFirstUse = false;
+			CertificatePinner.AutomaticPinPolicy = null;
 			CertificatePinner.KeyStore = new InMemoryKeyStore();
 		}
 
@@ -35,11 +36,11 @@ namespace CertPinner
 			// Arrange
 			// Act
 			CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.AlwaysTrust;
-			CertificatePinner.TrustOnFirstUse = true;
+			CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 
 			// Assert
 			Assert.AreEqual(CertificatePinner.CertificateAuthorityMode, CertificateAuthorityMode.AlwaysTrust);
-			Assert.IsTrue(CertificatePinner.TrustOnFirstUse);
+			Assert.IsInstanceOf<AlwaysAutoPin>(CertificatePinner.AutomaticPinPolicy);
 		}
 
 
@@ -50,7 +51,7 @@ namespace CertPinner
 		{
 			// Arrange
 			var restClient = GetClient(url);
-			CertificatePinner.TrustOnFirstUse = false;
+			CertificatePinner.AutomaticPinPolicy = new NeverAutoPin();
 
 			// Act
 			// Assert
@@ -64,7 +65,7 @@ namespace CertPinner
 			// Arrange
 			using (var restClient = GetClient("https://google.com"))
 			{
-				CertificatePinner.TrustOnFirstUse = true;
+				CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 
 				// Act
 				// Assert
@@ -81,7 +82,7 @@ namespace CertPinner
 			using (var restClient = GetClient("https://google.com"))
 			{
 				CertificatePinner.KeyStore = new InMemoryKeyStore();
-				CertificatePinner.TrustOnFirstUse = true;
+				CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 
 				// Act
 				// Fake first request by just injecting key into store
@@ -98,12 +99,12 @@ namespace CertPinner
 			// Arrange
 			using (var restClient = GetClient("https://google.com"))
 			{
-				CertificatePinner.TrustOnFirstUse = true;
+				CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 				await restClient.GetAsync("");
 
 				// Act
 				// Fake first request by just injecting key into store
-				CertificatePinner.TrustOnFirstUse = false;
+				CertificatePinner.AutomaticPinPolicy = null;
 				// Assert
 				Assert.DoesNotThrowAsync(()=>restClient.GetAsync(""));
 			}
@@ -118,7 +119,7 @@ namespace CertPinner
 			using (var restClient = GetClient("https://google.com"))
 			{
 				CertificatePinner.KeyStore = new InMemoryKeyStore();
-				CertificatePinner.TrustOnFirstUse = trustOnFirstUse;
+				CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 				CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.AlwaysTrust;
 
 				// Act
@@ -137,7 +138,7 @@ namespace CertPinner
 			using (var restClient = GetClient("https://google.com"))
 			{
 				CertificatePinner.KeyStore = new InMemoryKeyStore();
-				CertificatePinner.TrustOnFirstUse = false;
+				CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 				CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
 
 				// Act
@@ -156,7 +157,7 @@ namespace CertPinner
 			using (var restClient = GetClient("https://google.com"))
 			{
 				CertificatePinner.KeyStore = new InMemoryKeyStore();
-				CertificatePinner.TrustOnFirstUse = false;
+				CertificatePinner.AutomaticPinPolicy = null;
 				CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
 
 				// Act + Assert

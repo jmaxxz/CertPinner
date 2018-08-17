@@ -6,6 +6,8 @@ namespace CertPinner
 {
 	public static class CertificatePinner
 	{
+		private static readonly NeverAutoPin NeverAutoPin = new NeverAutoPin();
+
 		public static IKeyStore KeyStore
 		{
 			get => _keyStore;
@@ -13,7 +15,13 @@ namespace CertPinner
 		}
 
 		private static IKeyStore _keyStore  = new InMemoryKeyStore();
-		public static bool TrustOnFirstUse { get; set; }
+		private static IAutomaticPinPolicy _automaticPinPolicy = NeverAutoPin;
+
+		public static IAutomaticPinPolicy AutomaticPinPolicy
+		{
+			get => _automaticPinPolicy;
+			set => _automaticPinPolicy = value ?? NeverAutoPin;
+		}
 
 		public static CertificateAuthorityMode CertificateAuthorityMode { get; set; } =
 			CertificateAuthorityMode.Distrust;
@@ -39,7 +47,8 @@ namespace CertPinner
 			var defaultResult = sslpolicyerrors == SslPolicyErrors.None &&
 			                    (CertificateAuthorityMode == CertificateAuthorityMode.AlwaysTrust
 			                     || CertificateAuthorityMode == CertificateAuthorityMode.TrustIfNotPinned && !_keyStore.IsPinned(request.Host));
-			if (TrustOnFirstUse)
+
+			if (_automaticPinPolicy.CanPin(request.Host.ToUpperInvariant()))
 			{
 				// Check default result 2nd in order to ensure key is added to store on first request
 				return _keyStore.MatchesExistingOrAddIfNew(request.Host, certificate.GetPublicKey()) || defaultResult;

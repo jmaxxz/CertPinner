@@ -21,7 +21,8 @@ Several built in pinning strategies are included in CertPinner. If none of these
 The most restrictive option, this option should be self explanitory. If the automatic pinning strategy is set to never no public keys will be automatically pinned. If caller wishes to pin a key it must be done explicity by updating the keystore directly. **IMPORTANT** strategy can be changed at anytime, for example one may wish to run in a less restrictive mode to allow peer discovery during installation or configuration and switch to a more restrictive mode for normal operation. All of the following modes are safer than disabling certificate validation outright. If your application currently disables certificate validation switching using CertPinner with the always strategy will improve the security of your application with minimal risk of breakage.
 
 ```csharp
-
+// Usage
+CertificatePinner.AutomaticPinPolicy = new NeverAutoPin();
 ```
 
 ### Whitelist
@@ -37,3 +38,8 @@ The blacklist strategy allows pinning on all hosts except those which have been 
 ### Always
 
 The always trust on first use strategy allows the pinning for all hosts. For applications which make requests to an indeterminately large number of hosts this strategy should be avoid as it will cause the keystore to grow quite large. This strategy is almost never the ideal long term solution. However, it provides a quick upgrade path for applications which may currently disable certificate validation entirely. The always trust on first use policy may be acceptable long term strategy for applications which only communicate with other devices on the lan especially if these other devices make use of self signed certificates.
+
+```csharp
+// Usage
+CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
+```
