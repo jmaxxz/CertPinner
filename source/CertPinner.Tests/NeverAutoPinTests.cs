@@ -6,7 +6,7 @@ namespace CertPinner
 	public class NeverAutoPinTests
 	{
 		[Test]
-		public void CanPin_ReturnsTrue()
+		public void CanPin_ReturnsFalse()
 		{
 			// Arrange
 			var instance = new NeverAutoPin();

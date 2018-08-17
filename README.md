@@ -29,6 +29,12 @@ CertificatePinner.AutomaticPinPolicy = new NeverAutoPin();
 
 The whitelist strategy only allows pinning hosts which have been explicitly specified. This strategy is recommended when remote public keys are not known at compile time or installation time. If self discovery of remote public keys is acceptable and desired this is the prefered strategy.
 
+```csharp
+var whitelist = new WhitelistAutoPin();
+CertificatePinner.AutomaticPinPolicy = whitelist;
+whitelist.AddToWhitelist("jmaxxz.com");
+
+```
 
 ### BlackList
 
@@ -40,7 +46,6 @@ The blacklist strategy allows pinning on all hosts except those which have been 
 The always trust on first use strategy allows the pinning for all hosts. For applications which make requests to an indeterminately large number of hosts this strategy should be avoid as it will cause the keystore to grow quite large. This strategy is almost never the ideal long term solution. However, it provides a quick upgrade path for applications which may currently disable certificate validation entirely. The always trust on first use policy may be acceptable long term strategy for applications which only communicate with other devices on the lan especially if these other devices make use of self signed certificates.
 
 ```csharp
-// Usage
 CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 ```
 
