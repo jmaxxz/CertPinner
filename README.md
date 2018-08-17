@@ -43,3 +43,31 @@ The always trust on first use strategy allows the pinning for all hosts. For app
 // Usage
 CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 ```
+
+
+## Included Pin Storage Options
+
+Several storage options are provided out by CertPinner. If none of these options meet your needs a custom storage option can be implemented through the IKeyStore interface. Ideally pins should be stored on the local machine in a location which can not be written to by unauthorized users. Any user or system which can modify or delete a pin store can perform a man in the middle attack on the application. Store pins in a safe location! They do not have to be kept secret, but they should be kept safe from unauthorized modification.
+
+
+### NullKeyStore (For testing only)
+
+The null key store does not actually store any pins. This implementation is provided **only** for testing purposes. Using the null key store disables pinning.
+```csharp
+CertificatePinner.KeyStore = new NullKeyStore();
+```
+
+### InMemoryKeyStore
+
+The InMemoryKeyStore stores all public keys in RAM. If the process is restarted (or crashes) all stored keys will be forgotten. It is not recommend you use this key store in production. However, if you are currently disabling certificate validation all together this keystore is a major improvement. If one uses the InMemoryKeyStore in production it is recommended to implement a means of repopulating the key store on application start.
+
+```csharp
+CertificatePinner.KeyStore = new InMemoryKeyStore();
+```
+
+### FileSystemKeyStore (Recommended)
+
+Allows user to specify a file path as a single JSON formated file.
+```csharp
+CertificatePinner.KeyStore = new FileSystemKeyStore(@"%appdata%\MyApp\PinnedKeys.json");
+```
