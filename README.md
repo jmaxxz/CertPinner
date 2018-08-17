@@ -29,11 +29,11 @@ The most restrictive option, this option should be self explanitory. If the auto
 The whitelist strategy only allows pinning hosts which have been explicitly specified.
 
 
-### Blacklisting
+### BlackList
 
 The blacklist strategy allows pinning on all hosts except those which have been explicitly excluded.
 
 
-### Always Trust On First Use
+### Always
 
 The always trust on first use strategy allows the pinning for all hosts. For applications which make requests to an indeterminately large number of hosts this strategy should be avoid as it will cause the keystore to grow quite large. This strategy is almost never the ideal long term solution. However, it provides a quick upgrade path for applications which may currently disable certificate validation entirely. The always trust on first use policy may be acceptable long term strategy for applications which only communicate with other devices on the lan especially if these other devices make use of self signed certificates.
