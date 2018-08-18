@@ -1,9 +1,11 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CertPinner.KeyStorage
 {
-	public class InMemoryKeyStore : IKeyStore
+	public class InMemoryKeyStore : IKeyStore, IEnumerable<HostKeyPair>
 	{
 		// Right now we store the full public key. If this takes up too much
 		// memory can switch to storing a signature.
@@ -47,6 +49,16 @@ namespace CertPinner.KeyStorage
 		{
 			var normalizedHost = host.ToUpperInvariant();
 			_backingStore[normalizedHost] = publicKey;
+		}
+
+		public IEnumerator<HostKeyPair> GetEnumerator()
+		{
+			return _backingStore.ToArray().Select(x => new HostKeyPair(x.Key, x.Value)).GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }
