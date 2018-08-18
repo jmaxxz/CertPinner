@@ -8,6 +8,11 @@ namespace CertPinner.KeyStorage
 		public TimeSpan AutoSaveInterval { get; set; } = TimeSpan.FromMinutes(1);
 		private bool _changesPending = false;
 
+		public FileSystemKeyStore(string path)
+		{
+			Path = Environment.ExpandEnvironmentVariables(path);
+		}
+
 		public string Path { get; }
 		public bool MatchesExistingOrAddIfNew(string host, byte[] publicKey)
 		{
