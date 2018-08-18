@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using RestSharp;
+
 // ReSharper disable AccessToDisposedClosure
 // Disabled because AssertThrowsAsync waits so resharper misidentifies this
 namespace CertPinner
@@ -60,7 +60,7 @@ namespace CertPinner
 
 		[Category("Integration")]
 		[Test]
-		public async Task WhenTrustOnFirstUse_FirstRequest_ResultsInSuccess()
+		public void WhenTrustOnFirstUse_FirstRequest_ResultsInSuccess()
 		{
 			// Arrange
 			using (var restClient = GetClient("https://google.com"))
