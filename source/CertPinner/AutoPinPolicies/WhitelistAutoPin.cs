@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace CertPinner
+namespace CertPinner.AutoPinPolicies
 {
 	public class WhitelistAutoPin : IAutomaticPinPolicy
 	{
@@ -10,7 +10,7 @@ namespace CertPinner
 			return _whiteList.ContainsKey(hostname.ToUpperInvariant());
 		}
 
-		public void AddToWhitelist(string anything)
+		public void AddHost(string anything)
 		{
 			_whiteList[anything.ToUpperInvariant()] = true;
 		}

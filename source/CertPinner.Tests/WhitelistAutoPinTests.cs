@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using CertPinner.AutoPinPolicies;
+using NUnit.Framework;
 
 namespace CertPinner
 {
@@ -23,7 +24,7 @@ namespace CertPinner
 		{
 			// Arrange
 			var instance = new WhitelistAutoPin();
-			instance.AddToWhitelist("anything");
+			instance.AddHost("anything");
 
 			// Act
 			var result = instance.CanPin("anything");

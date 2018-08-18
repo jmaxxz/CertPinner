@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using CertPinner.AutoPinPolicies;
+using NUnit.Framework;
 
 namespace CertPinner
 {

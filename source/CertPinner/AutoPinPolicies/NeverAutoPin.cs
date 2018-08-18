@@ -1,4 +1,4 @@
-﻿namespace CertPinner
+﻿namespace CertPinner.AutoPinPolicies
 {
 	public class NeverAutoPin : IAutomaticPinPolicy
 	{
