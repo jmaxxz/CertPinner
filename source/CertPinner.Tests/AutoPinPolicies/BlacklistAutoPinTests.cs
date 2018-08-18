@@ -1,7 +1,6 @@
-﻿using CertPinner.AutoPinPolicies;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
-namespace CertPinner
+namespace CertPinner.AutoPinPolicies
 {
 	[TestFixture]
 	public class BlacklistAutoPinTests

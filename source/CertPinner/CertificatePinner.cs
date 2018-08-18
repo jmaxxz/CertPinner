@@ -2,6 +2,7 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using CertPinner.AutoPinPolicies;
+using CertPinner.KeyStorage;
 
 namespace CertPinner
 {

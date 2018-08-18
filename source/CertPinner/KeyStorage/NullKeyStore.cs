@@ -1,4 +1,4 @@
-﻿namespace CertPinner
+﻿namespace CertPinner.KeyStorage
 {
 	/// <summary>
 	/// A key store that does not store any keys.

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq;
 
-namespace CertPinner
+namespace CertPinner.KeyStorage
 {
 	public class InMemoryKeyStore : IKeyStore
 	{

@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace CertPinner
+﻿namespace CertPinner.KeyStorage
 {
 	/// <summary>
 	/// A mapping of hosts (domains) to their respective

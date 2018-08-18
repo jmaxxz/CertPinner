@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace CertPinner
+namespace CertPinner.KeyStorage
 {
 	[TestFixture]
 	public class InMemoryKeyStoreTests

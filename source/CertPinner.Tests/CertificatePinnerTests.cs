@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using CertPinner.AutoPinPolicies;
+using CertPinner.KeyStorage;
 using NUnit.Framework;
 
 // ReSharper disable AccessToDisposedClosure
