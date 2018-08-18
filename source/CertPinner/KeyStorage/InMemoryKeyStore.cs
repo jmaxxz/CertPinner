@@ -53,7 +53,11 @@ namespace CertPinner.KeyStorage
 
 		public IEnumerator<HostKeyPair> GetEnumerator()
 		{
-			return _backingStore.ToArray().Select(x => new HostKeyPair(x.Key, x.Value)).GetEnumerator();
+			return _backingStore.ToArray().Select(x => new HostKeyPair
+			{
+				Host = x.Key, PublicKey = x.Value
+
+			}).ToList().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

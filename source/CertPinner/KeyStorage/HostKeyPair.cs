@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Runtime.Serialization;
 
 namespace CertPinner.KeyStorage
 {
+	[DataContract]
 	public class HostKeyPair
 	{
-		public string Host { get; }
-		public IReadOnlyCollection<byte> PublicKey { get; }
-
-		public HostKeyPair(string host, IReadOnlyCollection<byte> publicKey)
-		{
-			Host = host;
-			PublicKey = publicKey;
-		}
+		[DataMember]
+		public string Host { get; set; }
+		[DataMember]
+		public byte[] PublicKey { get; set; }
 	}
 }
