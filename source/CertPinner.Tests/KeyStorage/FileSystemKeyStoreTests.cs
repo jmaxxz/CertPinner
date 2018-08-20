@@ -80,13 +80,30 @@ namespace CertPinner.KeyStorage
 			instance.PinForHost("jmaxxz.com", pk);
 
 			// Act
-			instance.AutoSaveInterval = TimeSpan.FromSeconds(1);
-			await Task.Delay(5000);
+			instance.AutoSaveInterval = TimeSpan.FromSeconds(0.5);
+			await Task.Delay(2000);
 
 			// Assert
 			var secondInstance = new FileSystemKeyStore(path);
 			secondInstance.Reload();
 			Assert.IsTrue(secondInstance.MatchesExisting("jmaxxz.com", pk));
+		}
+
+		[Test]
+		public async Task AutoSave_WhenInterval0_DoesNotAutoSave()
+		{
+			// Arrange
+			var path = Path.GetTempFileName() + ".json";
+			var pk = new byte[] {0, 1, 2, 3, 4};
+			var instance = new FileSystemKeyStore(path);
+			instance.PinForHost("jmaxxz.com", pk);
+
+			// Act
+			instance.AutoSaveInterval = TimeSpan.FromSeconds(0);
+			await Task.Delay(2000);
+
+			// Assert
+			Assert.IsFalse(File.Exists(path));
 		}
 	}
 }
