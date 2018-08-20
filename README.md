@@ -1,6 +1,6 @@
 # CertPinner
 [![Build status](https://ci.appveyor.com/api/projects/status/h6a9xeaklghs37nv/branch/master?svg=true)](https://ci.appveyor.com/project/jmaxxz/certpinner/branch/master) 
-![NuGet](https://img.shields.io/nuget/dt/CertPinner.svg)
+[![NuGet](https://img.shields.io/nuget/dt/CertPinner.svg)](https://www.nuget.org/packages/CertPinner)
 
 
 A .net library which provides certificate pinning. Ideal for applications where a CA infrastructure is prohibitive or potentially comprimised.
