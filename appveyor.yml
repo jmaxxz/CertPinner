@@ -1,0 +1,21 @@
+version: 0.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+nuget:
+  disable_publish_on_pr: true
+before_build:
+- cmd: nuget restore
+build:
+  project: CertPinner.sln
+  verbosity: minimal

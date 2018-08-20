@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>CertPinner</AssemblyName>
+    <RootNamespace>CertPinner</RootNamespace>
+  </PropertyGroup>
+</Project>
