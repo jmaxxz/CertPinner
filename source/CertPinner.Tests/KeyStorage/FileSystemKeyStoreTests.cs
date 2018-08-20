@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using System.Threading.Tasks;
 
 namespace CertPinner.KeyStorage
 {
@@ -13,10 +14,13 @@ namespace CertPinner.KeyStorage
 		public void Constructor_Path_ExpandsEnvironmentVariables()
 		{
 			// Arrange
+			var tempDir = Environment.OSVersion.Platform == PlatformID.Win32Windows ? "%temp%" : "$TMPDIR";
 			// Act
-			var instance = new FileSystemKeyStore(@"%temp%\foo\pins.json");
+
+			var instance = new FileSystemKeyStore(tempDir+@"\foo\pins.json");
+
 			// Assert
-			Assert.AreEqual(Environment.GetEnvironmentVariable(@"temp")+@"\foo\pins.json", instance.Path);
+			Assert.AreEqual(Environment.ExpandEnvironmentVariables(tempDir)+@"\foo\pins.json", instance.Path);
 		}
 
 		[Test]
@@ -46,6 +50,43 @@ namespace CertPinner.KeyStorage
 			Assert.IsTrue(instance.MatchesExisting(existing[0].Host, existing[0].PublicKey));
 			Assert.IsTrue(instance.MatchesExisting(existing[1].Host, existing[1].PublicKey));
 			Assert.IsTrue(instance.MatchesExisting(existing[2].Host, existing[2].PublicKey));
+		}
+
+		[Test]
+		public void Save_WritesConfigurationToDist()
+		{
+			// Arrange
+			var path = Path.GetTempFileName() + ".json";
+			var pk = new byte[] {0, 1, 2, 3, 4};
+			var instance = new FileSystemKeyStore(path);
+			instance.PinForHost("jmaxxz.com", pk);
+
+			// Act
+			instance.Save();
+
+			// Assert
+			var secondInstance = new FileSystemKeyStore(path);
+			secondInstance.Reload();
+			Assert.IsTrue(secondInstance.MatchesExisting("jmaxxz.com", pk));
+		}
+
+		[Test]
+		public async Task AutoSave_OnInterval_CommitsToDisk()
+		{
+			// Arrange
+			var path = Path.GetTempFileName() + ".json";
+			var pk = new byte[] {0, 1, 2, 3, 4};
+			var instance = new FileSystemKeyStore(path);
+			instance.PinForHost("jmaxxz.com", pk);
+
+			// Act
+			instance.AutoSaveInterval = TimeSpan.FromSeconds(1);
+			await Task.Delay(5000);
+
+			// Assert
+			var secondInstance = new FileSystemKeyStore(path);
+			secondInstance.Reload();
+			Assert.IsTrue(secondInstance.MatchesExisting("jmaxxz.com", pk));
 		}
 	}
 }
