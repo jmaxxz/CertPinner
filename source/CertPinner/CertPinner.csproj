@@ -4,9 +4,8 @@
     <AssemblyName>CertPinner</AssemblyName>
     <RootNamespace>CertPinner</RootNamespace>
     <Version>0.0.0.0</Version>
-    <Description>CertPinner provides certificate pinning for .net project, supporting wide array of use cases. From
-      single host pinning, to trust on first use pinning for applications where self signed certificates are likely
-      to be used.</Description>
+    <Description>CertPinner provides certificate pinning for .net project, supporting wide array of use cases. From single host pinning, to trust on first use pinning for applications where self signed certificates are likely
+to be used.</Description>
     <Authors>Jmaxxz</Authors>
   </PropertyGroup>
 </Project>
