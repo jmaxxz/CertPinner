@@ -3,5 +3,6 @@
     <TargetFramework>net461</TargetFramework>
     <AssemblyName>CertPinner</AssemblyName>
     <RootNamespace>CertPinner</RootNamespace>
+    <Version>0.0.0.0</Version>
   </PropertyGroup>
 </Project>
