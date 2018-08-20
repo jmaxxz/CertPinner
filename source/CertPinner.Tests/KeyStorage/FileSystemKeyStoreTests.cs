@@ -42,6 +42,7 @@ namespace CertPinner.KeyStorage
 			}
 
 			var instance = new FileSystemKeyStore(path);
+			instance.PinForHost("example3", new byte[] {3, 3, 3});
 
 			// Act
 			instance.Reload();
@@ -50,6 +51,7 @@ namespace CertPinner.KeyStorage
 			Assert.IsTrue(instance.MatchesExisting(existing[0].Host, existing[0].PublicKey));
 			Assert.IsTrue(instance.MatchesExisting(existing[1].Host, existing[1].PublicKey));
 			Assert.IsTrue(instance.MatchesExisting(existing[2].Host, existing[2].PublicKey));
+			Assert.IsFalse(instance.MatchesExisting("example3", new byte[] {3, 3, 3}));
 		}
 
 		[Test]

@@ -28,7 +28,7 @@ namespace CertPinner.KeyStorage
 		private bool _changesPending;
 
 		// This is not a long term solution, however, it will work for now.
-		private readonly InMemoryKeyStore _backingKeyStore = new InMemoryKeyStore();
+		private InMemoryKeyStore _backingKeyStore = new InMemoryKeyStore();
 		public FileSystemKeyStore(string path)
 		{
 			Path = Environment.ExpandEnvironmentVariables(path);
@@ -90,13 +90,14 @@ namespace CertPinner.KeyStorage
 				update = serializer.ReadObject(fileStream) as HostKeyPair[];
 			}
 
-			// The current strategy only adds pins, it never removes them
-			// this is not a viable long term strategy, but will work for most
-			// use cases. Should be changed.
+			// This is not the most efficent strategy, but it will do for now.
+			var newBackingStore = new InMemoryKeyStore();
 			foreach (var hostKeyPair in update ?? new HostKeyPair[0])
 			{
-				PinForHost(hostKeyPair.Host, hostKeyPair.PublicKey);
+				newBackingStore.PinForHost(hostKeyPair.Host, hostKeyPair.PublicKey);
 			}
+
+			_backingKeyStore = newBackingStore;
 		}
 	}
 }
