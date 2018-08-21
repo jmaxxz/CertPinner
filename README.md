@@ -143,3 +143,21 @@ Allows user to specify a file path as a single JSON formated file.
 ```csharp
 CertificatePinner.KeyStore = new FileSystemKeyStore(@"%appdata%\MyApp\PinnedKeys.json");
 ```
+
+## Certificate Authority Modes
+
+Since certificate validation is handled by a single call back for the entire process space it is important to decide how your application will treat public keys signed by a CA the host trusts. CAs are an excellent solution if one has to talk to an inderterminate number of hosts over the life of an application. However, if one talks to a limited number of hosts CAs present a unique risk as nothing but the good will, or rather good processes of a CA keep them from issuing a certificate to a malicious party. If an application talks to a very limited number of hosts the most secure option would be to distrust CA signatures entirely and rely solely on pinned keys. This can present reliability problems as nothing stops a third party host from rekeying at any point. Thus, most of the time a comprimise where one pins certificates for hosts they control and trusts CAs for hosts they do not.
+
+CertPinner provides several options to configure how it treats unpinned certificates which have been signed by a 'trusted' ca.
+
+###	Distrust
+
+Ignore CA signatures entirely. Rely solely on pinning to determine if a public key belongs to a host.
+
+### TrustIfNotPinned
+
+Trust CA signatures only for hosts which do not have a public key pinned.
+
+### AlwaysTrust
+
+Trust CA even if public key does not match the pinned value.
