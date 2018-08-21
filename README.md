@@ -7,6 +7,8 @@ A .net library which provides certificate pinning. Ideal for applications where 
 
 ## Use cases
 
+TLDR: If your application needs to talk to a very large number of hosts on the internet, using pinning for hosts you control, or where the risks possed by a rogue CA have been deemed unacceptable. If your application talks to a small number of hosts, which are unlikely to have CA signed certificates consider trusting on first use and allow CA signed certificated for non-pinned hosts.
+
 ### Trust on first use (ssh model)
 For certain applications and environments it is difficult to role out and maintain a CA based infrastructure. Particularly for applications made up of several non-internet facing devices. Often times individuals deploying these environments are not technically savy or do not have a pki infrastructure. A trust on first use strategy attempts to limit the exposure to network based MiTM attacks to the moment of first contact. After first contact, the public key is remembered and used to validate all future connections.
 
