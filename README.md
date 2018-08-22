@@ -85,7 +85,7 @@ The most restrictive option, this option should be self explanitory. If the auto
 
 ```csharp
 CertificatePinner.AutomaticPinPolicy = new NeverAutoPin();
-// No host will have its certificate pinned on first use.
+// No host will have its certificate automatically pinned on first use.
 ```
 
 ### Whitelist
@@ -96,7 +96,7 @@ The whitelist strategy only allows pinning hosts which have been explicitly spec
 var whitelist = new WhitelistAutoPin();
 CertificatePinner.AutomaticPinPolicy = whitelist;
 whitelist.AddHost("jmaxxz.com");
-// jmaxxz.com is the only host allowed to be pinned
+// jmaxxz.com is the only host allowed to be automatically pinned on first use.
 ```
 
 ### BlackList
@@ -106,7 +106,7 @@ The blacklist strategy allows pinning on all hosts except those which have been 
 var blacklist = new BlacklistAutoPin();
 CertificatePinner.AutomaticPinPolicy = blacklist;
 blacklist.AddHost("jmaxxz.com");
-// jmaxxz.com will never have its certificate pinned
+// jmaxxz.com will never have its certificate automatically pinned on first use.
 ```
 
 ### Always
@@ -115,7 +115,7 @@ The always trust on first use strategy allows the pinning for all hosts. For app
 
 ```csharp
 CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
-// Every host will have its certificate pinned on the first request
+// Every host will have its certificate automatically pinned on the first use.
 ```
 
 
