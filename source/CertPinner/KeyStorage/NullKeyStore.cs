@@ -1,4 +1,8 @@
-﻿namespace CertPinner.KeyStorage
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CertPinner.KeyStorage
 {
 	/// <summary>
 	/// A key store that does not store any keys.
@@ -23,6 +27,16 @@
 
 		public void PinForHost(string host, byte[] publicKey)
 		{
+		}
+
+		public IEnumerator<HostKeyPair> GetEnumerator()
+		{
+			return Enumerable.Empty<HostKeyPair>().GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }

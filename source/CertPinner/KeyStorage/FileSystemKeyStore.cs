@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -103,6 +104,16 @@ namespace CertPinner.KeyStorage
 			}
 
 			_backingKeyStore = newBackingStore;
+		}
+
+		public IEnumerator<HostKeyPair> GetEnumerator()
+		{
+			return _backingKeyStore.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }

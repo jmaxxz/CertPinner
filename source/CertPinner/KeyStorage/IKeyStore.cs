@@ -1,10 +1,12 @@
-﻿namespace CertPinner.KeyStorage
+﻿using System.Collections.Generic;
+
+namespace CertPinner.KeyStorage
 {
 	/// <summary>
 	/// A mapping of hosts (domains) to their respective
 	/// public keys.
 	/// </summary>
-	public interface IKeyStore
+	public interface IKeyStore: IEnumerable<HostKeyPair>
 	{
 		/// <summary>
 		/// Checks if passed public key matches value pinned

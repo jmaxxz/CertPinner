@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace CertPinner.KeyStorage
 {
-	public class InMemoryKeyStore : IKeyStore, IEnumerable<HostKeyPair>
+	public class InMemoryKeyStore : IKeyStore
 	{
 		// Right now we store the full public key. If this takes up too much
 		// memory can switch to storing a signature.
