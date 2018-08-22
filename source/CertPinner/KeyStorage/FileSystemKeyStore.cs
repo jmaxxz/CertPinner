@@ -43,6 +43,11 @@ namespace CertPinner.KeyStorage
 				if (_changesPending)
 					Save();
 			};
+
+			if (File.Exists(Path))
+			{
+				Reload();
+			}
 		}
 
 		public string Path { get; }
