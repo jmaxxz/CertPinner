@@ -141,7 +141,7 @@ CertificatePinner.KeyStore = new InMemoryKeyStore();
 
 ### FileSystemKeyStore (Recommended)
 
-Allows user to specify a file path as a single JSON formated file.
+Allows user to specify a file path as a single JSON formated file. This file will be use to store pinned public keys. FileSystemKeyStore can be configured to auto save on a regular interval. Previously pinned keys are loaded on construction, and can manually be reloaded at any point in time.
 ```csharp
 CertificatePinner.KeyStore = new FileSystemKeyStore(@"%appdata%\MyApp\PinnedKeys.json");
 ```
