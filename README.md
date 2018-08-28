@@ -3,14 +3,15 @@
 [![NuGet](https://img.shields.io/nuget/dt/CertPinner.svg)](https://www.nuget.org/packages/CertPinner)
 
 
-A .net library which provides certificate pinning. Ideal for applications where a CA infrastructure is prohibitive or potentially comprimised.
+This is a .NET library that provides certificate pinning. It's ideal for applications where a CA infrastructure is prohibitive or potentially compromised.
 
 ## Use cases
 
-TLDR: If your application needs to talk to a very large number of hosts on the internet, using pinning for hosts you control, or where the risks possed by a rogue CA have been deemed unacceptable. If your application talks to a small number of hosts, which are unlikely to have CA signed certificates consider trusting on first use and allow CA signed certificated for non-pinned hosts.
+- If your application needs to talk to a very large number of hosts on the internet, using pinning for hosts you control, or where the risks posed by a rogue CA have been deemed unacceptable. 
+- If your application talks to a small number of hosts, which are unlikely to have CA signed certificates, consider trusting on first use and allow CA signed certificates for non-pinned hosts.
 
 ### Trust on first use (ssh model)
-For certain applications and environments it is difficult to role out and maintain a CA based infrastructure. Particularly for applications made up of several non-internet facing devices. Often times individuals deploying these environments are not technically savy or do not have a pki infrastructure. A trust on first use strategy attempts to limit the exposure to network based MiTM attacks to the moment of first contact. After first contact, the public key is remembered and used to validate all future connections.
+For certain applications and environments it is difficult to roll out and maintain a CA based infrastructure, particularly for applications made up of several non-internet facing devices. Oftentimes, individuals deploying these environments are not technically savvy or do not have a PKI infrastructure. A trust on first use strategy attempts to limit the exposure to network-based MiTM attacks to the moment of first contact. After first contact, the public key is remembered and used to validate all future connections.
 
 ```Csharp
 // At the start of your app configure CertPinner
@@ -25,17 +26,17 @@ fileSystemKeyStore.AutoSaveInterval = TimeSpan.FromMinutes(5);
 secondInstance.Reload();
 CertificatePinner.KeyStore = fileSystemKeyStore;
 
-// Configure auto pin policy. In most trust on first use scenerios a whitelist is ideal
+// Configure auto pin policy. In most trust on first use scenarios, a whitelist is ideal.
 var autoPinWhitelist = new WhitelistAutoPin();
 
-// Add any host you wish to allow Trust On First use for to the white list
-// new hosts can be added at any time.
+// Add any host you wish to allow trust on first use for to the whitelist.
+// New hosts can be added at any time.
 autoPinWhitelist.AddHost("jmaxxz.com");
 autoPinWhitelist.AddHost("localhost");
 autoPinWhitelist.AddHost("127.0.0.1");
 autoPinWhitelist.AddHost("192.168.0.1");
 
-// Enable trust on first use for host on the whitelist
+// Enable trust on first use for host on the whitelist.
 CertificatePinner.AutomaticPinPolicy = autoPinWhitelist;
 
 // If a host for which we have a pin presents a different certificate
@@ -43,7 +44,7 @@ CertificatePinner.AutomaticPinPolicy = autoPinWhitelist;
 // recommended mode of operation.
 CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
 
-// Enable CertPinner, this only has to be done once per process
+// Enable CertPinner. This only has to be done once per process.
 CertificatePinner.Enable();
 ```
 
@@ -53,7 +54,7 @@ Provides a mechanism to pin certificate at configuration or compilation time. Th
 ```Csharp
 // At the start of your app configure CertPinner
 
-// When in manul pinning mode the InMemoryKeyStore works well because CertPinner
+// When in manual pinning mode, the InMemoryKeyStore works well because CertPinner
 // will not need to learn/save any new public keys.
 CertificatePinner.KeyStore = new InMemoryKeyStore();
 
@@ -68,20 +69,20 @@ CertificatePinner.KeyStore.PinForHost("jmaxxz.com", new byte[] { 0x30, 0x82, 0x0
 // recommended mode of operation.
 CertificatePinner.CertificateAuthorityMode = CertificateAuthorityMode.TrustIfNotPinned;
 
-// Enable CertPinner, this only has to be done once per process
+// Enable CertPinner. This only has to be done once per process.
 CertificatePinner.Enable();
 ```
 
 
 ## Included Automatic Pinning Stratagies
 
-Several built in pinning strategies are included in CertPinner. If none of these strategies meet your needs a custom one can be provided by implementing `IAutomaticPinPolicy`. Automatic pinning strategies only affect pinning if no key has yet been pinned for a given host. Stategies below are ordered from most restrictive to least. In general more restrictive strategies should be prefered.
+Several built-in pinning strategies are included in CertPinner. If none of these strategies meet your needs, a custom one can be provided by implementing `IAutomaticPinPolicy`. Automatic pinning strategies only affect pinning if no key has yet been pinned for a given host. Stategies below are ordered from most restrictive to least. In general, more restrictive strategies are preferred.
 
- **IMPORTANT** strategy can be changed at anytime, for example one may wish to run in a less restrictive mode to allow peer discovery during installation or configuration and switch to a more restrictive mode for normal operation. All of the following modes are safer than disabling certificate validation outright. If your application currently disables certificate validation switching using CertPinner with the always strategy will improve the security of your application with minimal risk of breakage.
+ **IMPORTANT**: Strategy can be changed at anytime, for example one may wish to run in a less restrictive mode to allow peer discovery during installation or configuration and switch to a more restrictive mode for normal operation. All of the following modes are safer than disabling certificate validation outright. If your application currently disables certificate validation, switching to using CertPinner with the always strategy will improve the security of your application with minimal risk of breakage.
 
 ### Never (Default)
 
-The most restrictive option, this option should be self explanitory. If the automatic pinning strategy is set to never no public keys will be automatically pinned. If caller wishes to pin a key it must be done explicity by updating the keystore directly.
+The most restrictive option; this option should be self-explanatory. If the automatic pinning strategy is set to never, no public keys will be automatically pinned. If a caller wishes to pin a key it must be done explicity by updating the keystore directly.
 
 ```csharp
 CertificatePinner.AutomaticPinPolicy = new NeverAutoPin();
@@ -90,7 +91,7 @@ CertificatePinner.AutomaticPinPolicy = new NeverAutoPin();
 
 ### Whitelist
 
-The whitelist strategy only allows pinning hosts which have been explicitly specified. This strategy is recommended when remote public keys are not known at compile time or installation time. If self discovery of remote public keys is acceptable and desired this is the prefered strategy.
+The whitelist strategy only allows pinning hosts which have been explicitly specified. This strategy is recommended when remote public keys are not known at compile time or installation time. If self discovery of remote public keys is acceptable and desired, this is the preferred strategy.
 
 ```csharp
 var whitelist = new WhitelistAutoPin();
@@ -99,7 +100,7 @@ whitelist.AddHost("jmaxxz.com");
 // jmaxxz.com is the only host allowed to be automatically pinned on first use.
 ```
 
-### BlackList
+### Blacklist
 
 The blacklist strategy allows pinning on all hosts except those which have been explicitly excluded.
 ```csharp
@@ -111,7 +112,7 @@ blacklist.AddHost("jmaxxz.com");
 
 ### Always
 
-The always trust on first use strategy allows the pinning for all hosts. For applications which make requests to an indeterminately large number of hosts this strategy should be avoid as it will cause the keystore to grow quite large. This strategy is almost never the ideal long term solution. However, it provides a quick upgrade path for applications which may currently disable certificate validation entirely. The always trust on first use policy may be acceptable long term strategy for applications which only communicate with other devices on the lan especially if these other devices make use of self signed certificates.
+The always trust on first use strategy allows the pinning for all hosts. For applications that make requests to an indeterminately large number of hosts, this strategy should be avoided as it will cause the keystore to grow quite large. This strategy is almost never the ideal long-term solution. However, it provides a quick upgrade path for applications which may currently disable certificate validation entirely. The always trust on first use policy may be an acceptable long-term strategy for applications that only communicate with other devices on the LAN, especially if these other devices make use of self-signed certificates.
 
 ```csharp
 CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
@@ -121,7 +122,7 @@ CertificatePinner.AutomaticPinPolicy = new AlwaysAutoPin();
 
 ## Included Pin Storage Options
 
-Several storage options are provided out by CertPinner. If none of these options meet your needs a custom storage option can be implemented through the IKeyStore interface. Ideally pins should be stored on the local machine in a location which can not be written to by unauthorized users. Any user or system which can modify or delete a pin store can perform a man in the middle attack on the application. Store pins in a safe location! They do not have to be kept secret, but they should be kept safe from unauthorized modification.
+Several storage options are provided by CertPinner. If none of these options meet your needs, a custom storage option can be implemented through the IKeyStore interface. Ideally, pins should be stored on the local machine in a location that cannot be written to by unauthorized users. Any user or system that can modify or delete a pin store can perform a man in the middle attack on the application. Store pins in a safe location! They do not have to be kept secret, but they should be kept safe from unauthorized modification.
 
 
 ### NullKeyStore (For testing only)
@@ -133,7 +134,7 @@ CertificatePinner.KeyStore = new NullKeyStore();
 
 ### InMemoryKeyStore
 
-The InMemoryKeyStore stores all public keys in RAM. If the process is restarted (or crashes) all stored keys will be forgotten. It is not recommend you use this key store in production. However, if you are currently disabling certificate validation all together this keystore is a major improvement. If one uses the InMemoryKeyStore in production it is recommended to implement a means of repopulating the key store on application start.
+The InMemoryKeyStore stores all public keys in RAM. If the process is restarted (or crashes), all stored keys will be forgotten. It is not recommended that you use this key store in production. However, if you are currently disabling certificate validation all together, this keystore is a major improvement. If you use the InMemoryKeyStore in production it is recommended to implement a means of repopulating the key store on application start.
 
 ```csharp
 CertificatePinner.KeyStore = new InMemoryKeyStore();
@@ -141,16 +142,16 @@ CertificatePinner.KeyStore = new InMemoryKeyStore();
 
 ### FileSystemKeyStore (Recommended)
 
-Allows user to specify a file path as a single JSON formated file. This file will be use to store pinned public keys. FileSystemKeyStore can be configured to auto save on a regular interval. Previously pinned keys are loaded on construction, and can manually be reloaded at any point in time.
+FileSystemKeyStore allows you to specify a file path as a single JSON formatted file. This file will be used to store pinned public keys. FileSystemKeyStore can be configured to auto save on a regular interval. Previously pinned keys are loaded on construction, and can be manually reloaded at any point in time.
 ```csharp
 CertificatePinner.KeyStore = new FileSystemKeyStore(@"%appdata%\MyApp\PinnedKeys.json");
 ```
 
 ## Certificate Authority Modes
 
-Since certificate validation is handled by a single call back for the entire process space it is important to decide how your application will treat public keys signed by a CA the host trusts. CAs are an excellent solution if one has to talk to an inderterminate number of hosts over the life of an application. However, if one talks to a limited number of hosts CAs present a unique risk as nothing but the good will, or rather good processes of a CA keep them from issuing a certificate to a malicious party. If an application talks to a very limited number of hosts the most secure option would be to distrust CA signatures entirely and rely solely on pinned keys. This can present reliability problems as nothing stops a third party host from rekeying at any point. Thus, most of the time a comprimise where one pins certificates for hosts they control and trusts CAs for hosts they do not.
+Since certificate validation is handled by a single call back for the entire process space, it is important to decide how your application will treat public keys signed by a CA the host trusts. CAs are an excellent solution if one has to talk to an inderterminate number of hosts over the life of an application. However, if one talks to a limited number of hosts, CAs present a unique risk as nothing but the goodwill, or rather good processes of a CA keep them from issuing a certificate to a malicious party. If an application talks to a very limited number of hosts the most secure option would be to distrust CA signatures entirely and rely solely on pinned keys. This can present reliability problems as nothing stops a third party host from rekeying at any point. Thus, most of the time a compromise exists where one pins certificates for hosts they control and trusts CAs for hosts they do not.
 
-CertPinner provides several options to configure how it treats unpinned certificates which have been signed by a 'trusted' ca.
+CertPinner provides several options to configure how it treats unpinned certificates which have been signed by a 'trusted' CA.
 
 ###	Distrust
 
